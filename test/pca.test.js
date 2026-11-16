@@ -90,3 +90,35 @@ test('the picker draws every project and opens the chosen one', async () => {
   input.write('q');
   await done;
 });
+
+test('keeps everything up to date: finds what is behind and updates it quietly', async () => {
+  const home = fakeHome();
+  plant(home, '.tot', 'tot', '1.0.0', 'exit 0');
+  plant(home, '.pigeon', 'pigeon', '2.0.0', 'exit 0');
+  // a pretend website: newest versions, and a tot installer that "installs" 1.1.0
+  const http = require('http');
+  const server = http.createServer((req, res) => {
+    if (req.url === '/versions.json') { res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ gossip: '0.9.0', tot: '1.1.0', pigeon: '2.0.0', pca: '1.0.0' })); }
+    if (req.url === '/tot/install.sh') { res.writeHead(200); return res.end(`echo "Downloading Tree of Thought"\nprintf '{"version":"1.1.0"}' > "$HOME/.tot/app/package.json"\necho Done\n`); }
+    res.writeHead(404); res.end();
+  });
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  process.env.PCA_SITE = `http://127.0.0.1:${server.address().port}`;
+  try {
+    for (const m of ['../src/apps', '../src/updates']) delete require.cache[require.resolve(m)];
+    const U = require('../src/updates');
+    assert.ok(U.newer('1.10.0', '1.9.2') && !U.newer('1.0.0', '1.0.0') && !U.newer('0.9.0', '1.0.0'));
+    const behind = await U.check({ force: true });
+    assert.deepEqual(behind.map((u) => [u.app.id, u.have, u.want]), [['tot', '1.0.0', '1.1.0']], 'pca itself and pigeon are current');
+    const lines = [];
+    assert.equal(await U.quietInstall(behind[0].app, (l) => lines.push(l)), true);
+    assert.deepEqual(lines, ['Downloading Tree of Thought', 'Done']);
+    assert.equal((await U.check({ force: true })).length, 0, 'nothing left to do');
+    U.setAuto(false);
+    assert.equal(U.autoOn(), false);
+    U.setAuto(true);
+  } finally {
+    delete process.env.PCA_SITE;
+    server.close();
+  }
+});

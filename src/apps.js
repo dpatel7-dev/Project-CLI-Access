@@ -29,7 +29,7 @@ const shade = (hex, amt) => {
 const APPS = [
   {
     id: 'gossip', name: 'gossip', cmd: 'gossip', folder: '.gossip', color: '#7cc4ff', path: '',
-    about: 'end-to-end encrypted chat', more: 'people, servers, calls, files',
+    about: 'end-to-end encrypted chat', more: 'people, servers and calls',
     repo: 'dpatel7-dev/gossip',
     grid: [
       '..........................', '.....' + '......BBBB......' + '.....', '.....' + '....BBBBBBBB....' + '.....', '.....' + '...BBBBBBBBBB...' + '.....', '.....' + '..BBWWWBBWWWBB..' + '.....',
@@ -56,7 +56,7 @@ const APPS = [
   },
   {
     id: 'pigeon', name: 'pigeon', cmd: 'pigeon', folder: '.pigeon', color: '#2bc4b2', path: '/pigeon',
-    about: 'files between your devices', more: 'locked on the way, phone too',
+    about: 'your own locked drive', more: 'files fly between devices',
     repo: 'dpatel7-dev/pigeon',
     grid: [
       '..........................',

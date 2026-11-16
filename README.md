@@ -42,7 +42,7 @@ Then open a new terminal window and type `pca`. You don't need anything else fir
 | ← → (or 1, 2, 3) | choose a project |
 | Enter | open it — installs it first if it isn't on this computer yet |
 | u | update the chosen project |
-| U | update everything that's installed |
+| U | check for updates now and get them all |
 | x then x | uninstall the chosen project |
 | q | quit |
 
@@ -59,6 +59,20 @@ pca install all          # install every project
 pca update               # update everything that's installed
 pca remove gossip        # uninstall one project
 pca uninstall            # remove pca itself (your projects stay)
+```
+
+## Updates happen by themselves
+
+Every time pca starts, it asks the website which versions are newest and quietly
+updates whatever is behind, the projects and pca itself, while you look around
+(a card shows ↻ while it updates). `pca tot` and friends update that project
+before opening it. It checks at most once an hour, and if you're offline it just
+opens what you have.
+
+```sh
+pca update          # check and update everything right now
+pca auto off        # stop updating by itself (U in the picker still works)
+pca auto daily      # also update once a day, even when pca isn't open
 ```
 
 ## Where installs come from

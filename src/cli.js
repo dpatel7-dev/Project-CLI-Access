@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const A = require('./ansi');
 const Apps = require('./apps');
+const U = require('./updates');
 const pkg = require('../package.json');
 
 const HELP = `
@@ -13,8 +14,10 @@ const HELP = `
   pca                     pick a project and open it (installs it first if needed)
   pca gossip [args]       open gossip            (also: pca tot, pca pigeon)
   pca list                what's installed
-  pca install <name|all>  install a project      pca update [name|all]   get the newest
+  pca install <name|all>  install a project      pca update [name]       get the newest now
   pca remove <name>       uninstall a project    pca uninstall           remove pca itself
+  pca auto on|off         update by itself when it starts (on unless you turn it off)
+  pca auto daily|nodaily  also update once a day, even when pca isn't opened
   pca --version
 
   Projects: ${Apps.APPS.map((a) => `${a.cmd} (${a.name})`).join(', ')}
@@ -38,6 +41,25 @@ async function main(argv) {
       say(`  ${A.paint('●', { fg: st ? a.color : '#555555' })} ${a.cmd.padEnd(8)} ${a.name.padEnd(17)} ${st ? `v${st.version}` : 'not installed'}`);
     }
     return 0;
+  }
+  if (cmd === 'auto') {
+    const what = rest[0];
+    if (what === 'on' || what === 'off') { U.setAuto(what === 'on'); say(`  Updating by itself is ${what}.`); return 0; }
+    if (what === 'daily' || what === 'nodaily') { say('  ' + U.daily(what === 'daily')); return 0; }
+    say(`  Updating by itself is ${U.autoOn() ? 'on' : 'off'}. (pca auto on|off|daily|nodaily)`);
+    return 0;
+  }
+  if (cmd === 'update' && (!rest[0] || rest[0] === 'all' || rest[0] === '--quiet')) {
+    const quiet = rest.includes('--quiet');
+    const list = await U.check({ force: true, timeout: 8000 });
+    if (!list.length) { if (!quiet) say('  Everything is up to date.'); else say(`${new Date().toISOString()} up to date`); return 0; }
+    let ok = true;
+    for (const u of list) {
+      say(`  ${quiet ? new Date().toISOString() + ' ' : ''}Updating ${u.app.name} ${u.have} → ${u.want}`);
+      const done = quiet ? await U.quietInstall(u.app) : Apps.install(u.app);
+      ok = done && ok;
+    }
+    return ok ? 0 : 1;
   }
   if (cmd === 'install' || cmd === 'update') {
     const want = rest[0] || (cmd === 'update' ? 'all' : '');
@@ -66,6 +88,15 @@ async function main(argv) {
   if (!Apps.status(app)) {
     say(`  ${app.name} isn't installed yet - installing it now.`);
     if (!Apps.install(app)) return 1;
+  } else if (U.autoOn()) {
+    try {
+      const u = (await U.check()).find((x) => x.app.id === app.id);
+      if (u) {
+        process.stdout.write(`  Updating ${app.name} to ${u.want}…`);
+        const ok = await U.quietInstall(app);
+        say(ok ? ' done.' : ' (couldn\'t right now, opening the one you have).');
+      }
+    } catch { /* offline: open what's here */ }
   }
   return Apps.launch(app, rest);
 }

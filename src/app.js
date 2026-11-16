@@ -15,6 +15,7 @@
 const A = require('./ansi');
 const S = require('./sprite');
 const Apps = require('./apps');
+const U = require('./updates');
 const { Tui, fit, center, spread } = require('./tui');
 const pkg = require('../package.json');
 
@@ -42,7 +43,33 @@ class App {
       this.done = resolve;
       this.ui.start();
       this.ticker = setInterval(() => { if (this.flash && this.flash.until < Date.now()) { this.flash = null; this.ui.schedule(); } }, 300);
+      this.autoUpdate();
     });
+  }
+
+  /** Bring everything that's behind up to date, quietly, while you look around. */
+  async autoUpdate({ force = false } = {}) {
+    this.behind = {};
+    let list = [];
+    try { list = await U.check({ force }); } catch { return; }
+    for (const u of list) this.behind[u.app.id] = u.want;
+    this.ui.schedule();
+    if (!list.length) { if (force) this.say('Everything is up to date.'); return; }
+    if (!U.autoOn() && !force) return this.say(`Updates are ready: ${list.map((u) => `${u.app.cmd} ${u.want}`).join(', ')}. Press U to get them.`, 6000);
+    this.updating = true;
+    const done = [];
+    for (const u of list) {
+      this.busy = { id: u.app.id, text: `Updating ${u.app.name} to ${u.want}…` };
+      this.ui.schedule();
+      const ok = await U.quietInstall(u.app, (line) => { this.busy = { id: u.app.id, text: `Updating ${u.app.name} to ${u.want}: ${line}` }; this.ui.schedule(); });
+      if (ok) { done.push(`${u.app.cmd} ${u.want}`); delete this.behind[u.app.id]; }
+      else this.say(`Couldn't update ${u.app.name} right now. Press u on it to see why.`, 6000);
+    }
+    this.busy = null;
+    this.updating = false;
+    this.refresh();
+    if (done.length) this.say(`Updated ${done.join(', ')}.${done.some((d) => d.startsWith('pca ')) ? ' (The new pca starts next time.)' : ''}`, 6000);
+    if (this.waiting) { const w = this.waiting; this.waiting = null; w(); }
   }
 
   quit() {
@@ -56,6 +83,7 @@ class App {
   /** Open the chosen project (installing it first if it isn't here yet). */
   async open() {
     const app = Apps.APPS[this.sel];
+    if (this.updating && this.busy) { this.say(`One moment: finishing updates first (${this.busy.text.split(':')[0]}).`, 3000); await new Promise((r) => { this.waiting = r; }); }
     await this.ui.suspend(async () => {
       if (!Apps.status(app)) {
         process.stdout.write(`\n  ${app.name} isn't installed yet - installing it now.\n`);
@@ -69,7 +97,9 @@ class App {
   }
 
   async update(all) {
-    const list = all ? Apps.APPS.filter((a, i) => this.state[i]) : [Apps.APPS[this.sel]];
+    if (this.updating) return this.say('Already updating: one moment.');
+    if (all) return this.autoUpdate({ force: true });
+    const list = [Apps.APPS[this.sel]];
     if (!list.length) return this.say('Nothing installed yet. Press enter to install one.');
     await this.ui.suspend(async () => {
       let ok = true;
@@ -136,7 +166,9 @@ class App {
     const st = this.state[this.sel];
     const what = st ? `enter opens ${app.cmd}` : `enter installs and opens ${app.cmd}`;
     const hint = W - left >= 90 ? `← → choose · ${what} · u update · U update all · x remove · q quit` : `← → · enter open · u update · x remove · q quit`;
-    lines.push(' '.repeat(left) + A.clip(this.flash ? A.paint(this.flash.text, { fg: app.color }) : dim(hint), Math.max(10, W - left - 1)));
+    const busyApp = this.busy && (Apps.APPS.find((a) => a.id === this.busy.id) || { color: '#d9d4e8' });
+    const footer = this.flash ? A.paint(this.flash.text, { fg: app.color }) : this.busy ? A.paint('↻ ' + this.busy.text, { fg: busyApp.color }) : dim(hint);
+    lines.push(' '.repeat(left) + A.clip(footer, Math.max(10, W - left - 1)));
     lines.push('');
     lines.push(' '.repeat(left) + faint(`from ${Apps.site().replace(/^https?:\/\//, '')}`));
     const extra = Math.max(0, Math.floor((H - lines.length) / 3)); // sit a little above the middle
@@ -159,7 +191,12 @@ class App {
     row(A.paint(app.name, { bold: true, fg: on ? app.color : PAPER.fg }));
     row(dim(app.about));
     if (full) row(faint(app.more));
-    row(st ? A.paint('✓ ', { fg: app.color }) + dim(`v${st.version}`) + faint(`  ·  ${app.cmd}`) : faint('not installed yet'));
+    const want = this.behind && this.behind[app.id];
+    const now = this.busy && this.busy.id === app.id;
+    row(!st ? faint('not installed yet')
+      : now ? A.paint('↻ ', { fg: app.color }) + dim(`v${st.version} → ${want || 'newest'}`)
+        : want ? A.paint('↑ ', { fg: '#f2b33d' }) + dim(`v${st.version}`) + A.paint(`  ${want} is out`, { fg: '#f2b33d' })
+          : A.paint('✓ ', { fg: app.color }) + dim(`v${st.version}`) + faint(`  ·  ${app.cmd}`));
     out.push(B('╰' + '─'.repeat(inner) + '╯'));
     return out;
   }
