@@ -16,7 +16,7 @@ One command for every project. Type `pca`, pick one with the arrow keys, press E
 | Project | What it is | Command |
 | --- | --- | --- |
 | [gossip](https://github.com/dpatel7-dev/gossip) | end-to-end encrypted terminal chat | `gossip` |
-| [Tree of Thought](https://github.com/dpatel7-dev/Terminal-Of-Though-ToT-) | many AI models in one terminal garden | `tot` |
+| [Tree of Thought](https://github.com/dpatel7-dev/Tree-Of-Thought) | many AI models in one terminal garden | `tot` |
 | [pigeon](https://github.com/dpatel7-dev/pigeon) | send files between your computer and phone | `pigeon` |
 
 ## Install

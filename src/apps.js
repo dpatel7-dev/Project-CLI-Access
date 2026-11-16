@@ -43,7 +43,7 @@ const APPS = [
   {
     id: 'tot', name: 'tree of thought', cmd: 'tot', folder: '.tot', color: '#8fd16a', path: '/tot',
     about: 'many AI models, one garden', more: 'every answer is a branch',
-    repo: 'dpatel7-dev/Terminal-Of-Though-ToT-',
+    repo: 'dpatel7-dev/Tree-Of-Thought',
     grid: [
       '..........................',
       '...' + '.......LLLL.........' + '...', '...' + '.....LLHHLLLL.......' + '...', '...' + '....LHHLLLLLLL......' + '...', '...' + '...LLHLLLLLLLLl.....' + '...',
