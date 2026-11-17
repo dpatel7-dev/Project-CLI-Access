@@ -1,5 +1,5 @@
 'use strict';
-// Project CLI Access: one screen, three projects. Pick one and open it.
+// Project CLI Access: one screen, every project. Pick one and open it.
 //
 //      project cli access                                       v1.0.0
 //
@@ -120,6 +120,20 @@ class App {
     this.say(`Uninstalled ${app.name}.`);
   }
 
+  /** What changed in the newest version of the chosen app (its changelog, from GitHub). */
+  async whatsNew() {
+    const app = Apps.APPS[this.sel];
+    this.say(`Looking up what's new in ${app.name}…`, 3000);
+    let text;
+    try { text = await Apps.changes(app); } catch (e) { return this.say(`Couldn't get ${app.name}'s changelog right now (${e.message}).`, 6000); }
+    await this.ui.suspend(async () => {
+      const c = A.paint(app.name, { bold: true, fg: app.color });
+      process.stdout.write(`\n  ${c} ${dim('· what\'s new')}\n\n`);
+      for (const l of text.split('\n')) process.stdout.write('  ' + (/^## /.test(l) ? A.paint(l.replace(/^## /, ''), { bold: true, fg: app.color }) : l.replace(/^- /, '· ')) + '\n');
+      await pause();
+    });
+  }
+
   onKey(s, k) {
     if (k.ctrl && (k.name === 'c' || k.name === 'd')) return this.quit();
     const n = Apps.APPS.length;
@@ -130,6 +144,7 @@ class App {
     else if (s === 'u') this.update(false);
     else if (s === 'U') this.update(true);
     else if (s === 'x') this.remove();
+    else if (s === 'w' || s === 'n') this.whatsNew();
     else if (s === 'q' || k.name === 'escape') return this.quit();
     if (s !== 'x') this.armed = null;
     this.ui.schedule();
@@ -165,7 +180,7 @@ class App {
     const app = Apps.APPS[this.sel];
     const st = this.state[this.sel];
     const what = st ? `enter opens ${app.cmd}` : `enter installs and opens ${app.cmd}`;
-    const hint = W - left >= 90 ? `← → choose · ${what} · u update · U update all · x remove · q quit` : `← → · enter open · u update · x remove · q quit`;
+    const hint = W - left >= 100 ? `← → choose · ${what} · w what's new · u update · U update all · x remove · q quit` : `← → · enter open · w new · u update · x remove · q quit`;
     const busyApp = this.busy && (Apps.APPS.find((a) => a.id === this.busy.id) || { color: '#d9d4e8' });
     const footer = this.flash ? A.paint(this.flash.text, { fg: app.color }) : this.busy ? A.paint('↻ ' + this.busy.text, { fg: busyApp.color }) : dim(hint);
     lines.push(' '.repeat(left) + A.clip(footer, Math.max(10, W - left - 1)));

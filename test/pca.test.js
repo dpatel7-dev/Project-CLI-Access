@@ -30,7 +30,7 @@ test('knows what is installed and where installs come from', () => {
   const home = fakeHome();
   delete require.cache[require.resolve('../src/apps')];
   const Apps = require('../src/apps');
-  assert.strictEqual(Apps.APPS.length, 3);
+  assert.strictEqual(Apps.APPS.length, 4);
   assert.strictEqual(Apps.status(Apps.byId('tot')), null);
   plant(home, '.tot', 'tot', '1.2.3', 'exit 0');
   const st = Apps.status(Apps.byId('tree'));

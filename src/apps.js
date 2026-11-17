@@ -29,7 +29,7 @@ const shade = (hex, amt) => {
 const APPS = [
   {
     id: 'gossip', name: 'gossip', cmd: 'gossip', folder: '.gossip', color: '#7cc4ff', path: '',
-    about: 'end-to-end encrypted chat', more: 'people, servers and calls',
+    about: 'encrypted chat', more: 'people, servers, calls',
     repo: 'dpatel7-dev/gossip',
     grid: [
       '..........................', '.....' + '......BBBB......' + '.....', '.....' + '....BBBBBBBB....' + '.....', '.....' + '...BBBBBBBBBB...' + '.....', '.....' + '..BBWWWBBWWWBB..' + '.....',
@@ -42,7 +42,7 @@ const APPS = [
   },
   {
     id: 'tot', name: 'tree of thought', cmd: 'tot', folder: '.tot', color: '#8fd16a', path: '/tot',
-    about: 'many AI models, one garden', more: 'every answer is a branch',
+    about: 'many AIs, one garden', more: 'every answer, a branch',
     repo: 'dpatel7-dev/Tree-Of-Thought',
     grid: [
       '..........................',
@@ -56,7 +56,7 @@ const APPS = [
   },
   {
     id: 'pigeon', name: 'pigeon', cmd: 'pigeon', folder: '.pigeon', color: '#2bc4b2', path: '/pigeon',
-    about: 'your own locked drive', more: 'files fly between devices',
+    about: 'your own locked drive', more: 'files fly to devices',
     repo: 'dpatel7-dev/pigeon',
     grid: [
       '..........................',
@@ -67,6 +67,32 @@ const APPS = [
     ],
     ink: { G: '#8f9aab', W: '#c8d0dc', N: '#22b3a2', n: '#8a5cf6', E: '#ff8a3d', K: '#151a22', B: '#4a505c', F: '#ff8a3d', T: '#56606f' },
     mascot: 'Coo',
+  },
+  {
+    id: 'tidy', name: 'tidy', cmd: 'tidy', folder: '.tidy', color: '#e8913a', path: '/tidy',
+    about: 'an AI that tidies', more: 'plans first · undo',
+    repo: 'dpatel7-dev/tidy',
+    grid: [
+      '..........................',
+      '...' + '....................' + '...',
+      '...' + '...TTTT.............' + '...',
+      '...' + '..TTTTTT.....oO.oO..' + '...',
+      '...' + '.TTTooTTT....OOOOOO.' + '...',
+      '...' + '.TTo..oTT...OOOOOOO.' + '...',
+      '...' + '.TTo...TT...OOEOOON.' + '...',
+      '...' + '..To...TT..OOOOOOOO.' + '...',
+      '...' + '...o..TTT..OOCCOOO..' + '...',
+      '...' + '.....TTT..OOCCCC....' + '...',
+      '...' + '....TTT.OOOOCCCaA...' + '...',
+      '...' + '...TTT.OOOOOCCaaaA..' + '...',
+      '...' + '...TT.OOOOOOCCaaaA..' + '...',
+      '...' + '...TT.OOOOOOOCCaa...' + '...',
+      '...' + '....TTOOOOOOOOCC....' + '...',
+      '...' + '.....toOOOoo.oOOo...' + '...',
+      '...' + '....tttoo....ooo....' + '...',
+    ],
+    ink: { O: '#d9823b', o: '#a2581f', T: '#eda865', t: '#c97a35', C: '#f3e0c2', E: '#1b1410', N: '#3a2418', A: '#6e4a2c', a: '#c99a58' },
+    mascot: 'Hazel',
   },
 ];
 
@@ -111,6 +137,22 @@ function launch(app, args = []) {
   });
 }
 
+/** The newest section of an app's changelog (from GitHub), as plain text. */
+async function changes(app, { timeout = 6000 } = {}) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), timeout);
+  try {
+    const repo = app.repo || 'dpatel7-dev/Project-CLI-Access';
+    const res = await fetch(`https://raw.githubusercontent.com/${repo}/main/CHANGELOG.md`, { signal: ac.signal });
+    if (!res.ok) throw new Error(`GitHub said ${res.status}`);
+    const md = await res.text();
+    const parts = md.split(/\n(?=## )/).filter((x) => /^## /.test(x));
+    return (parts[0] || md).trim();
+  } catch (e) {
+    throw new Error(e.name === 'AbortError' ? 'no answer' : e.message);
+  } finally { clearTimeout(t); }
+}
+
 function uninstall(app) {
   const st = status(app);
   if (!st) return true;
@@ -118,4 +160,4 @@ function uninstall(app) {
   return r.status === 0;
 }
 
-module.exports = { APPS, byId, status, install, launch, uninstall, site, home, installUrl, DEFAULT_SITE };
+module.exports = { changes, APPS, byId, status, install, launch, uninstall, site, home, installUrl, DEFAULT_SITE };

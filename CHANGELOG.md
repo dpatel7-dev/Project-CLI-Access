@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+- tidy joins the family: an AI that tidies a folder for you (Hazel the squirrel's card). Enter installs and opens it.
+- w shows what's new in the chosen project.
+
 ## 1.1.0
 - pca keeps everything up to date by itself: when it starts it checks the website's /versions.json (at most once an hour) and quietly updates whatever is behind, itself included. Cards show ↻ while updating and ↑ when an update is waiting.
 - `pca tot` (and the others) update that project before opening it.

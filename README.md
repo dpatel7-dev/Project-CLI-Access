@@ -3,7 +3,7 @@
 One command for every project. Type `pca`, pick one with the arrow keys, press Enter.
 
 ```
-  project cli access  ·  one command, every project                        v1.0.0
+  project cli access  ·  one command, every project                        v1.2.0
 
   ╭──────────────────────╮  ╭──────────────────────╮  ╭──────────────────────╮
   │        Pebble        │  │        Rowan         │  │         Coo          │
@@ -17,7 +17,8 @@ One command for every project. Type `pca`, pick one with the arrow keys, press E
 | --- | --- | --- |
 | [gossip](https://github.com/dpatel7-dev/gossip) | end-to-end encrypted terminal chat | `gossip` |
 | [Tree of Thought](https://github.com/dpatel7-dev/Tree-Of-Thought) | many AI models in one terminal garden | `tot` |
-| [pigeon](https://github.com/dpatel7-dev/pigeon) | send files between your computer and phone | `pigeon` |
+| [pigeon](https://github.com/dpatel7-dev/pigeon) | your own locked drive; files fly between devices | `pigeon` |
+| [tidy](https://github.com/dpatel7-dev/tidy) | an AI that tidies a folder, carefully (plans first, only moves, undo) | `tidy` |
 
 ## Install
 
@@ -39,10 +40,11 @@ Then open a new terminal window and type `pca`. You don't need anything else fir
 
 | Key | Does |
 | --- | --- |
-| ← → (or 1, 2, 3) | choose a project |
+| ← → (or 1, 2, 3, 4) | choose a project |
 | Enter | open it — installs it first if it isn't on this computer yet |
 | u | update the chosen project |
 | U | check for updates now and get them all |
+| w | what's new in the chosen project |
 | x then x | uninstall the chosen project |
 | q | quit |
 
@@ -54,6 +56,7 @@ From the command line:
 pca                      # the picker
 pca tot                  # straight into Tree of Thought (installs it if needed)
 pca pigeon send pic.png  # anything after the name goes to the project
+pca tidy ~/Downloads     # tidy a folder
 pca list                 # what's installed, and which version
 pca install all          # install every project
 pca update               # update everything that's installed
