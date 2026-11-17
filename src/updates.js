@@ -69,12 +69,9 @@ async function check({ force = false, timeout } = {}) {
 
 /** Run an installer without taking over the screen; onLine(text) gets its output. */
 function quietInstall(app, onLine = () => {}) {
-  const win = process.platform === 'win32';
-  const url = Apps.installUrl(app, win ? 'ps1' : 'sh');
+  const [cmd, args] = Apps.installCommand(app);
   return new Promise((resolve) => {
-    const child = win
-      ? spawn('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', `irm ${url} | iex`], { stdio: ['ignore', 'pipe', 'pipe'] })
-      : spawn('sh', ['-c', `curl -fsSL "${url}" | sh`], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(cmd, args, { stdio: ['ignore', 'pipe', 'pipe'] });
     const feed = (d) => String(d).split(/\r?\n/).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean).forEach(onLine);
     child.stdout.on('data', feed);
     child.stderr.on('data', feed);

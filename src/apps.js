@@ -116,13 +116,31 @@ function installUrl(app, kind) {
   return `${site()}${app.path}/install.${kind}`;
 }
 
+/** The same installer, straight from GitHub (for when the website is down, blocked, or not updated yet). */
+function githubUrl(app, kind) {
+  return `https://raw.githubusercontent.com/${app.repo}/main/install.${kind}`;
+}
+
+/**
+ * The command that installs (or updates) an app: from the website, and if
+ * that doesn't work (blocked at school, a 404 because the site hasn't been
+ * updated yet, offline), from GitHub instead. The script is downloaded in
+ * full before it runs, so a half-finished download never runs.
+ */
+function installCommand(app, win = process.platform === 'win32') {
+  const a = installUrl(app, win ? 'ps1' : 'sh');
+  const b = githubUrl(app, win ? 'ps1' : 'sh');
+  if (win) {
+    return ['powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
+      `try { $s = irm '${a}' } catch { Write-Host "  The website didn't answer, so this comes from GitHub instead."; $s = irm '${b}' }; iex $s`]];
+  }
+  return ['sh', ['-c', `s=$(curl -fsSL "${a}" 2>/dev/null) || { echo "  The website didn't answer, so this comes from GitHub instead." >&2; s=$(curl -fsSL "${b}") || exit 1; }; printf '%s\\n' "$s" | sh`]];
+}
+
 /** Install (or update - the installers do both) an app, showing the installer's own output. */
 function install(app) {
-  const win = process.platform === 'win32';
-  const url = installUrl(app, win ? 'ps1' : 'sh');
-  const r = win
-    ? spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', `irm ${url} | iex`], { stdio: 'inherit' })
-    : spawnSync('sh', ['-c', `curl -fsSL "${url}" | sh`], { stdio: 'inherit' });
+  const [cmd, args] = installCommand(app);
+  const r = spawnSync(cmd, args, { stdio: 'inherit' });
   return r.status === 0;
 }
 
@@ -160,4 +178,4 @@ function uninstall(app) {
   return r.status === 0;
 }
 
-module.exports = { changes, APPS, byId, status, install, launch, uninstall, site, home, installUrl, DEFAULT_SITE };
+module.exports = { changes, installCommand, githubUrl, APPS, byId, status, install, launch, uninstall, site, home, installUrl, DEFAULT_SITE };

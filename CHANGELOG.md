@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1
+- Installing and updating fall back to GitHub when the website doesn't answer (blocked at school, offline, or not updated yet: that was the 404 when installing tidy). The installer is downloaded in full before it runs.
+
 ## 1.2.0
 - tidy joins the family: an AI that tidies a folder for you (Hazel the squirrel's card). Enter installs and opens it.
 - w shows what's new in the chosen project.
