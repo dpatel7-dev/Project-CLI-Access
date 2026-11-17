@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+- den joins the family: a cozy code editor that opens in your browser, with Ember the fox explaining things (her card is the orange one). Enter installs and opens it in the folder you're in.
+- Cards wrap into rows when the window is narrow, and the mascots only show when there's room, so every card is always on screen.
+
 ## 1.2.1
 - Installing and updating fall back to GitHub when the website doesn't answer (blocked at school, offline, or not updated yet: that was the 404 when installing tidy). The installer is downloaded in full before it runs.
 

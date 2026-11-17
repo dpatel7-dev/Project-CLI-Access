@@ -19,6 +19,7 @@ One command for every project. Type `pca`, pick one with the arrow keys, press E
 | [Tree of Thought](https://github.com/dpatel7-dev/Tree-Of-Thought) | many AI models in one terminal garden | `tot` |
 | [pigeon](https://github.com/dpatel7-dev/pigeon) | your own locked drive; files fly between devices | `pigeon` |
 | [tidy](https://github.com/dpatel7-dev/tidy) | an AI that tidies a folder, carefully (plans first, only moves, undo) | `tidy` |
+| [den](https://github.com/dpatel7-dev/Den) | a cozy, beginner-friendly code editor that opens in your browser | `den` |
 
 ## Install
 
@@ -57,6 +58,7 @@ pca                      # the picker
 pca tot                  # straight into Tree of Thought (installs it if needed)
 pca pigeon send pic.png  # anything after the name goes to the project
 pca tidy ~/Downloads     # tidy a folder
+pca den ~/my-site         # write code in a folder, in your browser
 pca list                 # what's installed, and which version
 pca install all          # install every project
 pca update               # update everything that's installed

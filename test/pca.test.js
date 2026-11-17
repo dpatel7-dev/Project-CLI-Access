@@ -30,7 +30,9 @@ test('knows what is installed and where installs come from', () => {
   const home = fakeHome();
   delete require.cache[require.resolve('../src/apps')];
   const Apps = require('../src/apps');
-  assert.strictEqual(Apps.APPS.length, 4);
+  assert.strictEqual(Apps.APPS.length, 5);
+  assert.strictEqual(Apps.githubUrl(Apps.byId('den'), 'sh'), 'https://raw.githubusercontent.com/dpatel7-dev/Den/main/install.sh');
+  for (const a of Apps.APPS) assert.ok(a.grid.length === 17 && a.grid.every((r) => r.length === 26), `${a.id}'s picture is 26 x 17`);
   assert.strictEqual(Apps.status(Apps.byId('tot')), null);
   plant(home, '.tot', 'tot', '1.2.3', 'exit 0');
   const st = Apps.status(Apps.byId('tree'));

@@ -94,6 +94,32 @@ const APPS = [
     ink: { O: '#d9823b', o: '#a2581f', T: '#eda865', t: '#c97a35', C: '#f3e0c2', E: '#1b1410', N: '#3a2418', A: '#6e4a2c', a: '#c99a58' },
     mascot: 'Hazel',
   },
+  {
+    id: 'den', name: 'den', cmd: 'den', folder: '.den', color: '#f0843c', path: '/den',
+    about: 'a cozy code editor', more: 'Run · preview · help',
+    repo: 'dpatel7-dev/Den',
+    grid: [
+      '..........................',
+      '....K...............K.....',
+      '....KK.............KK.....',
+      '....KWK...........KWK.....',
+      '....OWWO.........OWWO.....',
+      '...OOOOOOOOOOOOOOOOOOO....',
+      '...OOOOWEOOOOOOOWEOOOO....',
+      '...WWOOEEOOOOOOOEEOOWW....',
+      '....WWWOOOOOOOOOOOWWW.....',
+      '.....WWWWWWWWWWWWWWW......',
+      '.......WWWWWNWWWWW........',
+      '.........WWWWWWW....OOo...',
+      '........OOWWWWWOO..OOOWW..',
+      '.......OOOOWWWWWOOOOOOWWW.',
+      '.......OOOOOWWWOOOOOOWWWW.',
+      '.......oOOOOOOOOOOOOOWWW..',
+      '........KKK.oOOOo.KKKoW...',
+    ],
+    ink: { O: '#f0843c', o: '#c4602a', W: '#f6ead8', E: '#1b1410', N: '#2a1a12', K: '#4a2c1c' },
+    mascot: 'Ember',
+  },
 ];
 
 const byId = (id) => APPS.find((a) => a.id === id || a.cmd === id || a.name === id || (id === 'tree' && a.id === 'tot') || (id === 'tree-of-thought' && a.id === 'tot'));

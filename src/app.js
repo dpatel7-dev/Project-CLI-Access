@@ -153,28 +153,30 @@ class App {
   frame(W, H) {
     const lines = [];
     const n = Apps.APPS.length;
-    const wide = W >= n * 26 + 6;
-    const cardW = wide ? Math.min(32, Math.floor((W - 6 - 2 * (n - 1)) / n)) : Math.min(W - 6, 48);
-    const left = wide ? Math.floor((W - (n * cardW + 2 * (n - 1))) / 2) : Math.floor((W - cardW) / 2);
+    // one row when it fits; otherwise rows of cards, as many across as fit
+    let cols = W >= n * 26 + 6 ? n : Math.max(1, Math.min(n, Math.floor((W - 4) / 30)));
+    if (cols > 1 && cols < n) cols = Math.ceil(n / Math.ceil(n / cols)); // even rows: 3 + 2, not 4 + 1
+    const rows = Math.ceil(n / cols);
+    const cardW = cols === 1 ? Math.min(W - 6, 48) : Math.min(32, Math.floor((W - 6 - 2 * (cols - 1)) / cols));
+    const gridW = cols * cardW + 2 * (cols - 1);
+    const left = Math.max(1, Math.floor((W - gridW) / 2));
+    // mascots when there's room for them: on every card, or just the chosen one
+    const allPics = rows * 15 + 9 <= H;
+    const onePic = (rows - 1) * 6 + 15 + 9 <= H;
     lines.push('');
-    const span = Math.max(10, wide ? n * cardW + 2 * (n - 1) : cardW);
+    const span = Math.max(10, gridW);
     const tag = span >= 60 ? dim('  ·  one command, every project') : '';
-    lines.push(' '.repeat(Math.max(1, left)) + spread(A.paint('project cli access', { bold: true }) + tag, faint(`v${pkg.version}`), span));
+    lines.push(' '.repeat(left) + spread(A.paint('project cli access', { bold: true }) + tag, faint(`v${pkg.version}`), span));
     lines.push('');
-    const cards = Apps.APPS.map((a, i) => this.card(a, this.state[i], i === this.sel, cardW, wide || i === this.sel));
+    const cards = Apps.APPS.map((a, i) => this.card(a, this.state[i], i === this.sel, cardW, allPics || (onePic && i === this.sel)));
     const rects = [];
-    if (wide) {
+    for (let r = 0; r < rows; r++) {
+      const row = cards.slice(r * cols, (r + 1) * cols);
       const top = lines.length;
-      const h = Math.max(...cards.map((c) => c.length));
-      for (let y = 0; y < h; y++) lines.push(' '.repeat(left) + cards.map((c) => c[y] || ' '.repeat(cardW)).join('  '));
-      cards.forEach((c, i) => rects.push({ x: left + i * (cardW + 2), y: top, w: cardW, h }));
-    } else {
-      // narrow window: stacked, with only the chosen one showing its mascot
-      cards.forEach((c, i) => {
-        const top = lines.length;
-        for (const l of c) lines.push(' '.repeat(left) + l);
-        rects.push({ x: left, y: top, w: cardW, h: c.length });
-      });
+      const h = Math.max(...row.map((c) => c.length));
+      for (let y = 0; y < h; y++) lines.push(' '.repeat(left) + row.map((c) => c[y] || ' '.repeat(cardW)).join('  '));
+      row.forEach((c, k) => rects.push({ x: left + k * (cardW + 2), y: top, w: cardW, h: c.length }));
+      if (r < rows - 1) lines.push('');
     }
     lines.push('');
     const app = Apps.APPS[this.sel];

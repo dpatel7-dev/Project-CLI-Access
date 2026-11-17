@@ -12,7 +12,7 @@ const HELP = `
   Project CLI Access ${pkg.version} - one command for every project
 
   pca                     pick a project and open it (installs it first if needed)
-  pca gossip [args]       open gossip            (also: pca tot, pca pigeon, pca tidy)
+  pca gossip [args]       open gossip            (also: pca tot, pca pigeon, pca tidy, pca den)
   pca list                what's installed
   pca install <name|all>  install a project      pca update [name]       get the newest now
   pca remove <name>       uninstall a project    pca uninstall           remove pca itself
