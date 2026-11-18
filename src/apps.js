@@ -37,6 +37,8 @@ const APPS = [
       '.....' + '..BBrRWWWWWWBB..' + '.....', '.....' + '.BBBRRWWWWWWBBB.' + '.....', '.....' + 'BBB.RWWWWWWW.BBB' + '.....', '.....' + 'BB..WWWWWWWW..BB' + '.....',
       '.....' + '....BWWWWWWB....' + '.....', '.....' + '....BBwwwwBB....' + '.....', '.....' + '...OOOBBBBOOO...' + '.....', '.....' + '..OOOO....OOOO..' + '.....',
     ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['..BBBBB..', '.BWWBWWB.', '.BWEWEWB.', '.BWWOWWB.', '.RRRRRRR.', 'BBWWWWWBB', '.BWWWWWB.', '.OO...OO.'],
     ink: { B: '#567ab0', D: '#3a5480', W: '#f4f7fc', w: '#d6deeb', O: '#ffb048', o: '#e48a34', E: '#1a1e2a', R: '#ff707a', r: '#d45262' },
     mascot: 'Pebble',
   },
@@ -51,6 +53,8 @@ const APPS = [
       '...' + '..lLLLLLLLLLLLll....' + '...', '...' + '...llLLTTTTLLll.....' + '...', '...' + '.....lTTTTTTl.......' + '...', '...' + '......TETTET........' + '...',
       '...' + '......TTmmTT........' + '...', '...' + '......TTTTtT........' + '...', '...' + '.....TTTttTTT.......' + '...', '...' + 'GgGGTTTGGGGTTTGgG...' + '...',
     ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['...LLLLL...', '.LLHHLLLLL.', 'LLHLLLLLLLl', 'LLLLLLLLLll', '.lLLLLLLll.', '...lTTTl...', '....TTT....', '...TETET...', '...TTmTT...', '.GGTTTTTGG.'],
     ink: { L: '#8fd16a', l: shade('#8fd16a', -0.32), H: shade('#8fd16a', 0.35), T: '#b88a62', t: shade('#b88a62', -0.3), E: '#1b1410', m: shade('#b88a62', -0.45), G: shade('#8fd16a', -0.15), g: shade('#8fd16a', -0.4) },
     mascot: 'Rowan',
   },
@@ -65,6 +69,8 @@ const APPS = [
       '...' + '..GGWWWWGGGGGG......' + '...', '...' + '.TGWWWWWWGGGGG......' + '...', '...' + 'TTGGWWWWWWGGGG......' + '...', '...' + 'TTTGGGGGGGGGG.......' + '...',
       '...' + '...TTGGGGGGG........' + '...', '...' + '.......F..F.........' + '...', '...' + '......FF.FF.........' + '...', '...' + '....................' + '...',
     ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['.......GGG.', '......GGEGB', '......NnG..', '..GGGGNnN..', '.GWWWWGGGG.', 'TGGWWWGGGG.', 'TT.GGGGGG..', '......F.F..'],
     ink: { G: '#8f9aab', W: '#c8d0dc', N: '#22b3a2', n: '#8a5cf6', E: '#ff8a3d', K: '#151a22', B: '#4a505c', F: '#ff8a3d', T: '#56606f' },
     mascot: 'Coo',
   },
@@ -91,6 +97,8 @@ const APPS = [
       '...' + '.....toOOOoo.oOOo...' + '...',
       '...' + '....tttoo....ooo....' + '...',
     ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['.TT.....O.O.', 'TTtT....OOOO', 'TT.TT..OOEON', 'T...T.OOOOOO', '.T.TTOOCCOO.', '..TTOOCCCAA.', '..TTOOOCCaa.', '...TOOOOOO..', '....oo...oo.'],
     ink: { O: '#d9823b', o: '#a2581f', T: '#eda865', t: '#c97a35', C: '#f3e0c2', E: '#1b1410', N: '#3a2418', A: '#6e4a2c', a: '#c99a58' },
     mascot: 'Hazel',
   },
@@ -117,6 +125,8 @@ const APPS = [
       '.......oOOOOOOOOOOOOOWWW..',
       '........KKK.oOOOo.KKKoW...',
     ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['K.........K.', 'KK.......KK.', 'OWO.....OWO.', 'OOOOOOOOOOO.', 'OEOOOOOOOEO.', 'WWWOONOOWWW.', '.WWWWWWWWW..', '..OOWWWOO.OW', '..OOOOOOOOWW', '..KK...KK...'],
     ink: { O: '#f0843c', o: '#c4602a', W: '#f6ead8', E: '#1b1410', N: '#2a1a12', K: '#4a2c1c' },
     mascot: 'Ember',
   },

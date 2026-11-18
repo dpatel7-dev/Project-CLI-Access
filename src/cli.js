@@ -27,6 +27,11 @@ const say = (s = '') => process.stdout.write(s + '\n');
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
+  // the newest pca first, then everything else
+  if (cmd === undefined || Apps.byId(cmd)) {
+    const code = await U.updateSelf(argv, say);
+    if (code !== null) return code;
+  }
   if (cmd === undefined) {
     if (!process.stdin.isTTY || !process.stdout.isTTY) { say(HELP); return 0; }
     const { App } = require('./app');

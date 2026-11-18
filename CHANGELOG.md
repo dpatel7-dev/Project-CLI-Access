@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+- pca updates itself first: when there's a newer pca, it installs it and starts the new one before the menu opens. It now checks GitHub as well as the website and takes whichever is newer, so it keeps up even when the website is behind or blocked.
+- Clean pictures in macOS Terminal: the mascots are drawn with whole cells there (no more thin stripes), smaller and tidier, and the names under them line up. `TUI_PIXELS=smooth` brings back the detailed ones.
+
 ## 1.3.0
 - den joins the family: a cozy code editor that opens in your browser, with Ember the fox explaining things (her card is the orange one). Enter installs and opens it in the folder you're in.
 - Cards wrap into rows when the window is narrow, and the mascots only show when there's room, so every card is always on screen.

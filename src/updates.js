@@ -34,17 +34,38 @@ async function getJson(url, ms) {
   } finally { clearTimeout(t); }
 }
 
-/** The newest versions: { gossip, tot, pigeon, pca }, from the website (or GitHub if it's down). */
+/**
+ * The newest versions: { gossip, tot, pigeon, tidy, den, pca }. Asks the website
+ * and GitHub at the same time and keeps whichever is newer, so pca still updates
+ * when the website hasn't caught up yet (or is blocked where you are).
+ */
 async function latest({ timeout = 2500 } = {}) {
-  try {
-    const j = await getJson(`${Apps.site()}/versions.json`, timeout);
-    if (j && typeof j === 'object' && j.pca) return j;
-  } catch { /* try GitHub */ }
   const out = {};
-  await Promise.all(Apps.APPS.concat(SELF).map(async (a) => {
-    try { out[a.id] = (await getJson(`https://raw.githubusercontent.com/${a.repo}/main/package.json`, timeout)).version; } catch { /* unknown */ }
-  }));
+  const keep = (id, v) => { if (typeof v === 'string' && /^\d+\.\d+\.\d+/.test(v) && (!out[id] || newer(v, out[id]))) out[id] = v; };
+  await Promise.all([
+    getJson(`${Apps.site()}/versions.json`, timeout).then((j) => { if (j && typeof j === 'object') for (const [id, v] of Object.entries(j)) keep(id, v); }).catch(() => {}),
+    ...Apps.APPS.concat(SELF).map((a) => getJson(`https://raw.githubusercontent.com/${a.repo}/main/package.json`, timeout).then((j) => keep(a.id, j && j.version)).catch(() => {})),
+  ]);
   return out;
+}
+
+/**
+ * Before the menu opens: if there's a newer pca, install it and start it
+ * instead, so you're always using the newest one. Returns the new pca's exit
+ * code, or null when nothing changed.
+ */
+async function updateSelf(argv, say = () => {}) {
+  if (!autoOn() || process.env.PCA_UPDATED === '1' || process.env.PCA_NO_SELF_UPDATE === '1') return null;
+  let list;
+  try { list = await check({ timeout: 2000 }); } catch { return null; }
+  const me = list.find((u) => u.app.id === 'pca');
+  if (!me) return null;
+  say(`  Updating Project CLI Access ${me.have} → ${me.want}…`);
+  const ok = await quietInstall(SELF);
+  if (!ok) { say("  (Couldn't update right now. Opening the one you have.)"); return null; }
+  say('  Done. Starting the new one.');
+  const r = spawnSync(process.execPath, [process.argv[1], ...argv], { stdio: 'inherit', env: { ...process.env, PCA_UPDATED: '1' } });
+  return r.status === null ? 1 : r.status;
 }
 
 /**
@@ -125,4 +146,4 @@ function daily(on) {
   return on ? 'Daily updates are on: every day around lunchtime.' : 'Daily updates are off.';
 }
 
-module.exports = { check, latest, newer, quietInstall, autoOn, setAuto, daily, SELF, load, save };
+module.exports = { check, latest, newer, quietInstall, updateSelf, autoOn, setAuto, daily, SELF, load, save };

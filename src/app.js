@@ -68,8 +68,19 @@ class App {
     this.busy = null;
     this.updating = false;
     this.refresh();
-    if (done.length) this.say(`Updated ${done.join(', ')}.${done.some((d) => d.startsWith('pca ')) ? ' (The new pca starts next time.)' : ''}`, 6000);
+    if (done.some((d) => d.startsWith('pca '))) return this.restart();
+    if (done.length) this.say(`Updated ${done.join(', ')}.`, 6000);
     if (this.waiting) { const w = this.waiting; this.waiting = null; w(); }
+  }
+
+  /** pca itself was just updated: start the new one in its place. */
+  restart() {
+    clearInterval(this.ticker);
+    this.ui.stop();
+    process.stdout.write('\n  Project CLI Access was updated. Starting the new one…\n');
+    const { spawnSync } = require('child_process');
+    const r = spawnSync(process.execPath, [process.argv[1]], { stdio: 'inherit', env: { ...process.env, PCA_UPDATED: '1' } });
+    process.exit(r.status === null ? 1 : r.status);
   }
 
   quit() {
@@ -153,16 +164,22 @@ class App {
   frame(W, H) {
     const lines = [];
     const n = Apps.APPS.length;
+    // how big the pictures are in this terminal (small whole-cell ones in macOS Terminal)
+    const pics = Apps.APPS.map((a) => S.size(a.grid, a.mini));
+    const picW = Math.max(...pics.map((p) => p.w));
+    const picH = Math.max(...pics.map((p) => p.h));
+    const minW = Math.max(26, picW + 4);
+    this.picH = picH;
     // one row when it fits; otherwise rows of cards, as many across as fit
-    let cols = W >= n * 26 + 6 ? n : Math.max(1, Math.min(n, Math.floor((W - 4) / 30)));
+    let cols = W >= n * minW + 6 ? n : Math.max(1, Math.min(n, Math.floor((W - 4) / (minW + 2))));
     if (cols > 1 && cols < n) cols = Math.ceil(n / Math.ceil(n / cols)); // even rows: 3 + 2, not 4 + 1
     const rows = Math.ceil(n / cols);
     const cardW = cols === 1 ? Math.min(W - 6, 48) : Math.min(32, Math.floor((W - 6 - 2 * (cols - 1)) / cols));
     const gridW = cols * cardW + 2 * (cols - 1);
     const left = Math.max(1, Math.floor((W - gridW) / 2));
     // mascots when there's room for them: on every card, or just the chosen one
-    const allPics = rows * 15 + 9 <= H;
-    const onePic = (rows - 1) * 6 + 15 + 9 <= H;
+    const allPics = rows * (picH + 6) + 9 <= H && cardW - 2 >= picW;
+    const onePic = (rows - 1) * 6 + picH + 6 + 9 <= H && cardW - 2 >= picW;
     lines.push('');
     const span = Math.max(10, gridW);
     const tag = span >= 60 ? dim('  ·  one command, every project') : '';
@@ -201,7 +218,9 @@ class App {
     const out = [];
     out.push(B('╭' + '─'.repeat(inner) + '╮'));
     if (full) {
-      const pic = S.draw(app.grid, app.ink, { bg: PAPER.bg });
+      const pic = S.picture(app.grid, app.mini, app.ink, { bg: PAPER.bg });
+      // every card's picture sits on the same line, so the names line up
+      for (let i = pic.length; i < (this.picH || 0); i++) out.push(B('│') + ' '.repeat(inner) + B('│'));
       for (const l of pic) out.push(B('│') + center(l, inner) + B('│'));
     }
     const row = (s) => out.push(B('│') + fit(' ' + A.clip(s, inner - 2), inner) + B('│'));
