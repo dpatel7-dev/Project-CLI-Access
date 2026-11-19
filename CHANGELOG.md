@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+- Three new projects, each with its own mascot:
+  - **scout** (Pip the owl): ask anything; it searches the web, reads the best pages and explains what it found, with links to every source.
+  - **roomy** (Shelly the hermit crab): makes room on your disk, safely: old installers, caches and build leftovers go to the Trash, and u puts them back.
+  - **hey** (Biscuit the dog): say what you want to do in plain words and get the terminal command, explained, with how risky it is. Enter runs it.
+
 ## 1.5.0
 - Fixed: keys sometimes went missing in an app opened from pca (Enter in tidy did nothing). When pca updated itself in the background while an app was open, the new pca started reading the keyboard too. Now pca waits until you leave the app before restarting, and never updates an app while you're using it.
 
