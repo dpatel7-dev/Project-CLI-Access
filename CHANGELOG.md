@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.0
+- Fixed: keys sometimes went missing in an app opened from pca (Enter in tidy did nothing). When pca updated itself in the background while an app was open, the new pca started reading the keyboard too. Now pca waits until you leave the app before restarting, and never updates an app while you're using it.
+
 ## 1.4.0
 - pca updates itself first: when there's a newer pca, it installs it and starts the new one before the menu opens. It now checks GitHub as well as the website and takes whichever is newer, so it keeps up even when the website is behind or blocked.
 - Clean pictures in macOS Terminal: the mascots are drawn with whole cells there (no more thin stripes), smaller and tidier, and the names under them line up. `TUI_PIXELS=smooth` brings back the detailed ones.

@@ -59,6 +59,8 @@ class App {
     this.updating = true;
     const done = [];
     for (const u of list) {
+      // never swap an app's files while you're using it: wait until you leave it
+      while (this.inApp === u.app.id) await new Promise((r) => { this.left = r; });
       this.busy = { id: u.app.id, text: `Updating ${u.app.name} to ${u.want}…` };
       this.ui.schedule();
       const ok = await U.quietInstall(u.app, (line) => { this.busy = { id: u.app.id, text: `Updating ${u.app.name} to ${u.want}: ${line}` }; this.ui.schedule(); });
@@ -68,7 +70,8 @@ class App {
     this.busy = null;
     this.updating = false;
     this.refresh();
-    if (done.some((d) => d.startsWith('pca '))) return this.restart();
+    // a new pca: start it - but not while an app is open, or both would read your keys
+    if (done.some((d) => d.startsWith('pca '))) { if (this.inApp) { this.restartLater = true; return; } return this.restart(); }
     if (done.length) this.say(`Updated ${done.join(', ')}.`, 6000);
     if (this.waiting) { const w = this.waiting; this.waiting = null; w(); }
   }
@@ -100,9 +103,12 @@ class App {
         process.stdout.write(`\n  ${app.name} isn't installed yet - installing it now.\n`);
         if (!Apps.install(app)) { await pause(); return; }
       }
-      const code = await Apps.launch(app);
+      this.inApp = app.id;
+      let code;
+      try { code = await Apps.launch(app); } finally { this.inApp = null; if (this.left) { const l = this.left; this.left = null; l(); } }
       if (code === 127) { process.stdout.write(`\n  Couldn't start ${app.name}. Try installing it again (u).\n`); await pause(); }
     });
+    if (this.restartLater) return this.restart();
     this.refresh();
     this.say(`Back from ${app.name}.`, 2000);
   }
