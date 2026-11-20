@@ -214,6 +214,34 @@ const APPS = [
     ink: { E: '#8a5a2b', B: '#d9a05b', K: '#1b1410', N: '#1b1410', W: '#f6e7cf', P: '#f08a9a' },
     mascot: 'Biscuit',
   },
+  {
+    id: 'morph', name: 'morph', cmd: 'morph', folder: '.morph', color: '#d39cf5', path: '/morph',
+    about: 'convert any file', more: 'any format · needs Python',
+    repo: 'dpatel7-dev/morph',
+    grid: [
+      '..........................',
+      '.........bbbbbbbb.........',
+      '.......bbBBBBBBBBbb.......',
+      '......bBBBBBBBBBBBBb......',
+      '.....bBHHBBBBBBBBBBBb.....',
+      '.....bBHBBBBBBBBBBBBb.....',
+      '....bBBBBBBBBBBBBBBBBb....',
+      '....bBBBEEBBBBBBEEBBBb....',
+      '...bBBBBEEBBBBBBEEBBBBb...',
+      '...bBBPPBBBBMMBBBBPPBBb...',
+      '...bBBBBBBBBBBBBBBBBBBb...',
+      '...bb.bb.bb.bb.bb.bb.bb...',
+      '....T..T..AA..AA..T..T....',
+      '...T....T.AA..AA.T....T...',
+      '....T..T.AA....AA.T..T....',
+      '.....T.T..AA..AA..T.T.....',
+      '....t...t.aa..aa.t...t....',
+    ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['...bbbbbb...', '..bBBBBBBb..', '.bBHBBBBBBb.', '.bBEBBBBEBb.', '.bPBBMMBBPb.', '.bb.bbbb.bb.', '..T.A..A.T..', '.T..A..A..T.', '..t.a..a.t..'],
+    ink: { B: '#e6e0ff', b: '#b9a8f2', H: '#ffffff', E: '#1b1430', M: '#1b1430', P: '#ff9cc8', A: '#f29ad6', a: '#c96fb0', T: '#8fd4f2', t: '#5aa9d9' },
+    mascot: 'Luma',
+  },
 ];
 
 const byId = (id) => APPS.find((a) => a.id === id || a.cmd === id || a.name === id || (id === 'tree' && a.id === 'tot') || (id === 'tree-of-thought' && a.id === 'tot'));

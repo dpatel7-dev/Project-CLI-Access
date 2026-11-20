@@ -20,6 +20,10 @@ One command for every project. Type `pca`, pick one with the arrow keys, press E
 | [pigeon](https://github.com/dpatel7-dev/pigeon) | your own locked drive; files fly between devices | `pigeon` |
 | [tidy](https://github.com/dpatel7-dev/tidy) | an AI that tidies a folder, carefully (plans first, only moves, undo) | `tidy` |
 | [den](https://github.com/dpatel7-dev/Den) | a cozy, beginner-friendly code editor that opens in your browser | `den` |
+| [scout](https://github.com/dpatel7-dev/scout) | ask anything; it searches the web and explains, with sources | `scout` |
+| [roomy](https://github.com/dpatel7-dev/roomy) | makes room on your disk, safely (to the Trash first, undo) | `roomy` |
+| [hey](https://github.com/dpatel7-dev/hey) | say what you want to do, get the terminal command, explained | `hey` |
+| [morph](https://github.com/dpatel7-dev/morph) | convert any file to any other, on your own computer (needs Python 3) | `morph` |
 
 ## Install
 
