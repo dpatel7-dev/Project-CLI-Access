@@ -242,6 +242,34 @@ const APPS = [
     ink: { B: '#e6e0ff', b: '#b9a8f2', H: '#ffffff', E: '#1b1430', M: '#1b1430', P: '#ff9cc8', A: '#f29ad6', a: '#c96fb0', T: '#8fd4f2', t: '#5aa9d9' },
     mascot: 'Luma',
   },
+  {
+    id: 'shoo', name: 'shoo', cmd: 'shoo', folder: '.shoo', color: '#d9a877', path: '/shoo',
+    about: 'block ads on your Mac', more: 'YouTube too · Mac only',
+    repo: 'dpatel7-dev/shoo',
+    grid: [
+      '..........................',
+      '..........................',
+      '.........k...k............',
+      '......k.kSk.kSk.k.........',
+      '.....kSkSSSkSSSkSk........',
+      '...k.SSSSsSSSSsSSSk.......',
+      '..kSSSsSSSSSsSSSSSSk......',
+      '.kSSsSSSSsSSSSSsSSSSFf....',
+      '.SSSSSSsSSSSsSSSSSSFFFFf..',
+      'kSsSSSSSSSSSSSSsSSFFEHFFf.',
+      'SSSSSsSSSsSSSSSSSSFFEEFFFN',
+      'SSsSSSSSSSSSsSSSSFFFFFFFFN',
+      '.SSSSSSsSSSSSSSSFFPPFFFFf.',
+      '..fFFFFFFFFFFFFFFFFFFFFf..',
+      '...fFFFFFFFFFFFFFFFFFff...',
+      '....LL..LL.......LL..LL...',
+      '..........................',
+    ],
+    // the small picture, made of whole cells (macOS Terminal)
+    mini: ['............', '...k.k.k....', '..kSkSkSk...', '.kSSSSSSSFf.', 'kSSsSSSSFEFN', 'SSSSSSSFFFFN', '.fFFFFFFPFf.', '..L.L..L.L..', '............'],
+    ink: { S: '#5e4030', s: '#7d5a40', k: '#b08a64', F: '#f2dcb8', f: '#dcbc90', E: '#1d1410', N: '#2a1a14', P: '#f2a0a6', L: '#a8784e', H: '#ffffff' },
+    mascot: 'Bramble',
+  },
 ];
 
 const byId = (id) => APPS.find((a) => a.id === id || a.cmd === id || a.name === id || (id === 'tree' && a.id === 'tot') || (id === 'tree-of-thought' && a.id === 'tot'));

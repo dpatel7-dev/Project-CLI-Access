@@ -24,6 +24,7 @@ One command for every project. Type `pca`, pick one with the arrow keys, press E
 | [roomy](https://github.com/dpatel7-dev/roomy) | makes room on your disk, safely (to the Trash first, undo) | `roomy` |
 | [hey](https://github.com/dpatel7-dev/hey) | say what you want to do, get the terminal command, explained | `hey` |
 | [morph](https://github.com/dpatel7-dev/morph) | convert any file to any other, on your own computer (needs Python 3) | `morph` |
+| [shoo](https://github.com/dpatel7-dev/shoo) | blocks ads on your whole Mac, YouTube included | `shoo` |
 
 ## Install
 
